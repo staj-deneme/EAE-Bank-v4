@@ -209,7 +209,7 @@ router.post('/userUpdate', function (req, res, next) {
 
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
-        dFonk.logOlustur[process.env.SELECTED_DATABASE](log).then((result) => {
+        dFonk.logOlustur(log).then((result) => {
 
             res.json({ status: 201, rData: rData });
 
@@ -255,12 +255,12 @@ router.post('/buyAnimalFeed', function (req, res, next) {
 
         dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
-            dFonk.logOlustur[process.env.SELECTED_DATABASE](log).then((result) => {
+            dFonk.logOlustur(log).then((result) => {
 
                 res.json({ status: 201, rData: rData });
 
             }).catch((reason) => {
-                res.json({ status: 499 });
+                res.json(reason);
             });
 
 
@@ -284,7 +284,7 @@ router.post('/sellProducts', function (req, res, next) {
 
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
-        dFonk.logOlustur[process.env.SELECTED_DATABASE](log).then((result) => {
+        dFonk.logOlustur(log).then((result) => {
 
             res.json({ status: 201, rData: rData });
 
@@ -304,7 +304,7 @@ router.get('/test', function (req, res, next) {
         password: "05312456227"
     }
 
-    dFonk.kayitGetir[process.env.SELECTED_DATABASE](userData).then((result) => {
+    dFonk.kayitGetir(userData).then((result) => {
 
         req.session.account = result;
         res.send(result);

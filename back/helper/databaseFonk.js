@@ -189,43 +189,29 @@ module.exports = {
             });
         }
     },
-    logOlustur: {
-        mongoDB: function (data) {
-            return new Promise((resolve, reject) => {
-                data = new UserLogs(data);
-                data.save((err, data) => {
-                    if (err) { reject("mukerrer"); }
-                    else { resolve(data); }
-                });
-
-            });
-        },
-        json: function (data) {
-            return new Promise((resolve, reject) => {
-
-                storage.initSync();
-                var logs = storage.getItemSync("UserLogs");
-                if (logs == null) { logs = []; }
-
-                var log = data;
-
-                logs.push(log);
-                storage.setItemSync("UserLogs", logs);
-                resolve(log);
-
-            });
-        },
-        mysql: function (data) {
-            return new Promise((resolve, reject) => {
-                
-                data.logs = JSON.stringify(data.logs);
-
-                connection.query('INSERT INTO userlogs SET ?', data, (err, res) => {
-                    if (err) reject(err);
-                    else resolve(res.insertId);
+    logOlustur: function (data) {
+        return new Promise((resolve, reject) => {
+            var kafka = require('kafka-node'),
+                Producer = kafka.Producer,
+                client = new kafka.Client(),
+                producer = new Producer(client),
+                payloads = [
+                    {
+                        topic: 'eaebank',
+                        messages: JSON.stringify(data)
+                    }
+                ];
+            producer.on('ready', function () {
+                producer.send(payloads, function (err, data) {
+                    if (err) {
+                        reject(err);
+                    }else{
+                        resolve(data);
+                    }
                 });
             });
-        }
+
+        });
     }
 
 };
