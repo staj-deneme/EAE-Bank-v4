@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var dFonk = require("../helper/databaseFonk.js");
 var fonk = require("../helper/uretimZaman");
+var topics = ["eaeLog", "eaeUsers"];
 
 function uretimKaynak(data, id) {
     return new Promise(function (resolve, reject) {
@@ -17,22 +18,26 @@ function uretimKaynak(data, id) {
             olmeyecekler.cow = [];
             for (var j = 0; j < rData.cow.length; j++) {
                 //hayvan sayısına göre bonus
-                var oran=1.0;
-                if(rData.cow.length>=10 && rData.cow.length<20){   oran=1.2;} 
-                else if(rData.cow.length>=20 && rData.cow.length<30){   oran=1.5;}
-                else if(rData.cow.length>=30){   oran=2.0;}
-                //
-                dif = fonk.diffMin(new Date(), new Date(rData.cow[j].cal));//son beslenmeden beri geçen zaman
-                if(parseInt(dif/5)>=1 && rData.seed <= fonk.eatSeedBee(dif)){
-                    rData.cow[j].death=fonk.upTime(rData.cow[j].death,parseInt(dif/5));//ömür kısaltma
+                var oran = 1.0;
+                if (rData.cow.length >= 10 && rData.cow.length < 20) {
+                    oran = 1.2;
+                } else if (rData.cow.length >= 20 && rData.cow.length < 30) {
+                    oran = 1.5;
+                } else if (rData.cow.length >= 30) {
+                    oran = 2.0;
                 }
-                difDeath = fonk.diffMin(new Date(), new Date(rData.cow[j].death));//yaşamış olduğu süre
+                //
+                dif = fonk.diffMin(new Date(), new Date(rData.cow[j].cal)); //son beslenmeden beri geçen zaman
+                if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
+                    rData.cow[j].death = fonk.upTime(rData.cow[j].death, parseInt(dif / 5)); //ömür kısaltma
+                }
+                difDeath = fonk.diffMin(new Date(), new Date(rData.cow[j].death)); //yaşamış olduğu süre
                 difTotal = fonk.deathCow() - fonk.diffMin(new Date(rData.cow[j].cal), new Date(rData.cow[j].death));
 
                 if (difDeath >= fonk.deathCow()) {
                     if (rData.seed >= fonk.eatSeedCow(dif)) {
                         if (difTotal > 0) {
-                            rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(difTotal,oran));
+                            rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(difTotal, oran));
                             if (rData.seed >= fonk.eatSeedCow(difTotal)) {
                                 rData.seed -= fonk.eatSeedCow(difTotal)
                             }
@@ -40,9 +45,9 @@ function uretimKaynak(data, id) {
                     }
                 } else {
                     if (rData.seed >= fonk.eatSeedCow(dif)) {
-                            rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(dif,oran));
-                            rData.cow[j].cal = new Date();
-                            rData.seed -= fonk.eatSeedCow(dif);
+                        rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(dif, oran));
+                        rData.cow[j].cal = new Date();
+                        rData.seed -= fonk.eatSeedCow(dif);
                     }
                     olmeyecekler.cow.push(rData.cow[j]);
                 }
@@ -54,15 +59,19 @@ function uretimKaynak(data, id) {
             olmeyecekler.chicken = [];
             for (var j = 0; j < rData.chicken.length; j++) {
                 //hayvan sayısına göre bonus
-                var oran=1.0;
-                if(rData.chicken.length>=10 && rData.chicken.length<20){   oran=1.2;} 
-                else if(rData.chicken.length>=20 && rData.chicken.length<30){   oran=1.5;}
-                else if(rData.chicken.length>=30){   oran=2;}
+                var oran = 1.0;
+                if (rData.chicken.length >= 10 && rData.chicken.length < 20) {
+                    oran = 1.2;
+                } else if (rData.chicken.length >= 20 && rData.chicken.length < 30) {
+                    oran = 1.5;
+                } else if (rData.chicken.length >= 30) {
+                    oran = 2;
+                }
                 //
 
                 dif = fonk.diffMin(new Date(), new Date(rData.chicken[j].cal));
-                if(parseInt(dif/5)>=1 && rData.seed <= fonk.eatSeedBee(dif)){
-                    rData.chicken[j].death=fonk.upTime(rData.chicken[j].death,parseInt(dif/5));//ömür kısaltma
+                if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
+                    rData.chicken[j].death = fonk.upTime(rData.chicken[j].death, parseInt(dif / 5)); //ömür kısaltma
                 }
                 difDeath = fonk.diffMin(new Date(), new Date(rData.chicken[j].death));
                 difTotal = fonk.deathChicken() - fonk.diffMin(new Date(rData.chicken[j].cal), new Date(rData.chicken[j].death));
@@ -70,7 +79,7 @@ function uretimKaynak(data, id) {
                 if (difDeath >= fonk.deathChicken()) {
                     if (rData.seed >= fonk.eatSeedChicken(dif)) {
                         if (difTotal > 0) {
-                            rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(difTotal,oran));
+                            rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(difTotal, oran));
                             if (rData.seed >= fonk.eatSeedChicken(difTotal)) {
                                 rData.seed -= fonk.eatSeedChicken(difTotal)
                             }
@@ -78,9 +87,9 @@ function uretimKaynak(data, id) {
                     }
                 } else {
                     if (rData.seed >= fonk.eatSeedChicken(dif)) {
-                            rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(dif,oran));
-                            rData.chicken[j].cal = new Date();
-                            rData.seed -= fonk.eatSeedChicken(dif);
+                        rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(dif, oran));
+                        rData.chicken[j].cal = new Date();
+                        rData.seed -= fonk.eatSeedChicken(dif);
                     }
                     olmeyecekler.chicken.push(rData.chicken[j]);
                 }
@@ -93,15 +102,19 @@ function uretimKaynak(data, id) {
             olmeyecekler.bee = [];
             for (var j = 0; j < rData.bee.length; j++) {
                 //hayvan sayısına göre bonus
-                var oran=1.0;
-                if(rData.bee.length>=10 && rData.bee.length<20){   oran=1.2;} 
-                else if(rData.bee.length>=20 && rData.bee.length<30){   oran=1.5;}
-                else if(rData.bee.length>=30){   oran=2;}
+                var oran = 1.0;
+                if (rData.bee.length >= 10 && rData.bee.length < 20) {
+                    oran = 1.2;
+                } else if (rData.bee.length >= 20 && rData.bee.length < 30) {
+                    oran = 1.5;
+                } else if (rData.bee.length >= 30) {
+                    oran = 2;
+                }
                 //
 
                 dif = fonk.diffMin(new Date(), new Date(rData.bee[j].cal));
-                if(parseInt(dif/5)>=1 && rData.seed <= fonk.eatSeedBee(dif)){
-                    rData.bee[j].death=fonk.upTime(rData.bee[j].death,parseInt(dif/5));//ömür kısaltma
+                if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
+                    rData.bee[j].death = fonk.upTime(rData.bee[j].death, parseInt(dif / 5)); //ömür kısaltma
                 }
                 difDeath = fonk.diffMin(new Date(), new Date(rData.bee[j].death));
                 difTotal = fonk.deathBee() - fonk.diffMin(new Date(rData.bee[j].cal), new Date(rData.bee[j].death));
@@ -109,7 +122,7 @@ function uretimKaynak(data, id) {
                 if (difDeath >= fonk.deathBee()) {
                     if (rData.seed >= fonk.eatSeedBee(dif)) {
                         if (difTotal > 0) {
-                            rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(difTotal,oran));
+                            rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(difTotal, oran));
                             if (rData.seed >= fonk.eatSeedBee(difTotal)) {
                                 rData.seed -= fonk.eatSeedBee(difTotal)
                             }
@@ -117,9 +130,9 @@ function uretimKaynak(data, id) {
                     }
                 } else {
                     if (rData.seed >= fonk.eatSeedBee(dif)) {
-                            rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(dif,oran));
-                            rData.bee[j].cal = new Date();
-                            rData.seed -= fonk.eatSeedBee(dif);
+                        rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(dif, oran));
+                        rData.bee[j].cal = new Date();
+                        rData.seed -= fonk.eatSeedBee(dif);
                     }
                     olmeyecekler.bee.push(rData.bee[j]);
                 }
@@ -148,18 +161,31 @@ router.post('/userCreate', function (req, res, next) {
     var member = req.body.member;
 
     dFonk.kayitOlustur[process.env.SELECTED_DATABASE](member).then((result) => {
-        res.json({ status: 201, member: result });
-        /* res.send(result); */
+
+        dFonk.logOlustur(member, topics[1]).then((result) => {
+            res.json({
+                status: 201,
+                member: result
+            });
+        }).catch((err) => {
+            res.send(err);
+        });;
+
     }).catch((reason) => {
         if (reason == "mukerrer") {
-            res.json({ status: 499 });
+            res.json({
+                status: 499
+            });
         }
     });
 });
 
 router.post('/userControl', function (req, res, next) {
 
-    const { userName, password } = req.body;
+    const {
+        userName,
+        password
+    } = req.body;
     var userData = {
         userName: userName,
         password: password
@@ -167,20 +193,30 @@ router.post('/userControl', function (req, res, next) {
 
     dFonk.kayitGetir[process.env.SELECTED_DATABASE](userData).then((result) => {
 
-        res.json({ status: 201, account: result });
+        res.json({
+            status: 201,
+            account: result
+        });
 
     }).catch((reason) => {
         if (reason == "bulunamadı") {
-            res.json({ status: 204 });
+            res.json({
+                status: 204
+            });
         } else {
-            res.json({ status: 409 });
+            res.json({
+                status: 409
+            });
         }
     });
 });
 
 router.post('/requireAuthentication', function (req, res, next) {
 
-    const { userName, password } = req.body;
+    const {
+        userName,
+        password
+    } = req.body;
     var userData = {
         userName: userName,
         password: password
@@ -190,41 +226,56 @@ router.post('/requireAuthentication', function (req, res, next) {
 
         uretimKaynak(resultData, resultData._id).then(function (result) {
             resultData.resources = result;
-            res.json({ status: 201, account: resultData });
+            res.json({
+                status: 201,
+                account: resultData
+            });
         });
 
     }).catch((reason) => {
         if (reason == "bulunamadı") {
-            res.json({ status: 204 });
+            res.json({
+                status: 204
+            });
         } else {
-            res.json({ status: 409, reason: reason });
+            res.json({
+                status: 409,
+                reason: reason
+            });
         }
     });
 });
 
 router.post('/userUpdate', function (req, res, next) {
 
-    const { id, rData } = req.body.islemler;
+    const {
+        id,
+        rData
+    } = req.body.islemler;
     const log = req.body.loglar;
 
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
-        dFonk.logOlustur(log).then((result) => {
-
-            res.json({ status: 201, rData: rData });
-
-        }).catch((reason) => {
-            res.json({ status: 499 });
+        dFonk.logOlustur(log, topics[0]);
+        res.json({
+            status: 201,
+            rData: rData
         });
 
     }).catch((reason) => {
-        res.json({ status: 409 });
+        res.json({
+            status: 409
+        });
     });
 });
 
 router.post('/buyAnimalFeed', function (req, res, next) {
 
-    let { id, islem, rData } = req.body.islemler;
+    let {
+        id,
+        islem,
+        rData
+    } = req.body.islemler;
 
     let log = req.body.loglar;
 
@@ -254,27 +305,30 @@ router.post('/buyAnimalFeed', function (req, res, next) {
         rData.coin -= minCoin;
 
         dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
-
-            dFonk.logOlustur(log).then((result) => {
-
-                res.json({ status: 201, rData: rData });
-
-            }).catch((reason) => {
-                res.json(reason);
+            dFonk.logOlustur(log, topics[0]);
+            res.json({
+                status: 201,
+                rData: rData
             });
-
-
         }).catch((reason) => {
-            res.json({ status: 409 });
+            res.json({
+                status: 409
+            });
         });
     } else {
-        res.json({ status: 101 }); // yeterli altını yok
+        res.json({
+            status: 101
+        }); // yeterli altını yok
     }
 });
 
 router.post('/sellProducts', function (req, res, next) {
 
-    let { id, islem, rData } = req.body.islemler;
+    let {
+        id,
+        islem,
+        rData
+    } = req.body.islemler;
     let log = req.body.loglar;
 
     if (rData[islem] > 0) {
@@ -284,16 +338,16 @@ router.post('/sellProducts', function (req, res, next) {
 
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
-        dFonk.logOlustur(log).then((result) => {
-
-            res.json({ status: 201, rData: rData });
-
-        }).catch((reason) => {
-            res.json({ status: 409 });
+        dFonk.logOlustur(log, topics[0]);
+        res.json({
+            status: 201,
+            rData: rData
         });
 
     }).catch((reason) => {
-        res.json({ status: 409 });
+        res.json({
+            status: 409
+        });
     });
 });
 

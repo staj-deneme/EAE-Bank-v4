@@ -2,6 +2,9 @@ const Members = require("../models/Members");
 const UserLogs = require("../models/UserLogs");
 const storage = require('node-persist');
 var mysql = require('mysql');
+var kafka = require('kafka-node');
+
+
 
 if (process.env.SELECTED_DATABASE == "mysql") {
     var connection = mysql.createConnection({
@@ -27,8 +30,11 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 data = new Members(data);
                 data.save((err, data) => {
-                    if (err) { reject("mukerrer"); }
-                    else { resolve(data); }
+                    if (err) {
+                        reject("mukerrer");
+                    } else {
+                        resolve(data);
+                    }
                 });
 
             });
@@ -40,7 +46,9 @@ module.exports = {
                 var accounts = storage.getItemSync("Members");
                 var mukerrer = false;
 
-                if (accounts == null) { accounts = []; }
+                if (accounts == null) {
+                    accounts = [];
+                }
 
                 var member = {
                     name: data.name,
@@ -103,8 +111,7 @@ module.exports = {
 
                     if (data == null) {
                         reject("bulunamadı");
-                    }
-                    else {
+                    } else {
                         if (data.userName == "tosuncuk") {
                             res.redirect("/tosuncuk");
                         } else {
@@ -154,8 +161,9 @@ module.exports = {
             return new Promise((resolve, reject) => {
 
                 Members.findByIdAndUpdate(
-                    userId,
-                    { "resources": rData },
+                    userId, {
+                        "resources": rData
+                    },
                     (err, data) => {
                         if (err) reject(err);
                         else {
@@ -189,24 +197,27 @@ module.exports = {
             });
         }
     },
-    logOlustur: function (data) {
+    logOlustur: function (data, topicname) {
         return new Promise((resolve, reject) => {
-            var kafka = require('kafka-node'),
-                Producer = kafka.Producer,
+            
+            var Producer = kafka.Producer,
                 client = new kafka.Client(),
-                producer = new Producer(client),
-                payloads = [
-                    {
-                        topic: 'eaebank',
-                        messages: JSON.stringify(data)
-                    }
-                ];
+                producer = new Producer(client);
+
+            var payloads = [{
+                topic: topicname,
+                messages: JSON.stringify(data)
+            }];
+
             producer.on('ready', function () {
                 producer.send(payloads, function (err, data) {
+                    console.log("yollama yarine girdi");
                     if (err) {
                         reject(err);
-                    }else{
+                        console.log("err : "+ err );
+                    } else {
                         resolve(data);
+                        console.log("data : " + JSON.stringify(data));
                     }
                 });
             });
