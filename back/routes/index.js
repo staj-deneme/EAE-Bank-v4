@@ -162,14 +162,8 @@ router.post('/userCreate', function (req, res, next) {
 
     dFonk.kayitOlustur[process.env.SELECTED_DATABASE](member).then((result) => {
 
-        dFonk.logOlustur(member, topics[1]).then((result) => {
-            res.json({
-                status: 201,
-                member: result
-            });
-        }).catch((err) => {
-            res.send(err);
-        });;
+        dFonk.logOlustur(member, topics[1])
+        res.json({ status: 201, member: result });
 
     }).catch((reason) => {
         if (reason == "mukerrer") {
@@ -190,91 +184,55 @@ router.post('/userControl', function (req, res, next) {
     }
 
     dFonk.kayitGetir[process.env.SELECTED_DATABASE](userData).then((result) => {
-
-        res.json({
-            status: 201,
-            account: result
-        });
-
+        res.json({ status: 201, account: result });
     }).catch((reason) => {
         if (reason == "bulunamadı") {
-            res.json({
-                status: 204
-            });
+            res.json({ status: 204 });
         } else {
-            res.json({
-                status: 409
-            });
+            res.json({ status: 409 });
         }
     });
 });
 
 router.post('/requireAuthentication', function (req, res, next) {
 
-    const {
-        userName,
-        password
-    } = req.body;
-    var userData = {
-        userName: userName,
-        password: password
-    }
+    const { userName, password } = req.body;
+    var userData = { userName: userName, password: password }
 
     dFonk.kayitGetir[process.env.SELECTED_DATABASE](userData).then((resultData) => {
 
         uretimKaynak(resultData, resultData._id).then(function (result) {
             resultData.resources = result;
-            res.json({
-                status: 201,
-                account: resultData
-            });
+            res.json({ status: 201, account: resultData });
         });
 
     }).catch((reason) => {
         if (reason == "bulunamadı") {
-            res.json({
-                status: 204
-            });
+            res.json({ status: 204 });
         } else {
-            res.json({
-                status: 409,
-                reason: reason
-            });
+            res.json({ status: 409, reason: reason });
         }
     });
 });
 
 router.post('/userUpdate', function (req, res, next) {
 
-    const {
-        id,
-        rData
-    } = req.body.islemler;
+    const { id, rData } = req.body.islemler;
     const log = req.body.loglar;
 
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
         dFonk.logOlustur(log, topics[0]);
-        res.json({
-            status: 201,
-            rData: rData
-        });
+        res.json({ status: 201, rData: rData });
 
     }).catch((reason) => {
-        res.json({
-            status: 409
-        });
+        res.json({ status: 409 });
     });
 });
 
 router.post('/buyAnimalFeed', function (req, res, next) {
 
-    let {
-        id,
-        islem,
-        rData
-    } = req.body.islemler;
-
+    let { id, islem, rData } = req.body.islemler;
     let log = req.body.loglar;
 
     var minCoin = 0;
@@ -304,29 +262,18 @@ router.post('/buyAnimalFeed', function (req, res, next) {
 
         dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
             dFonk.logOlustur(log, topics[0]);
-            res.json({
-                status: 201,
-                rData: rData
-            });
+            res.json({ status: 201, rData: rData });
         }).catch((reason) => {
-            res.json({
-                status: 409
-            });
+            res.json({ status: 409 });
         });
     } else {
-        res.json({
-            status: 101
-        }); // yeterli altını yok
+        res.json({ status: 101 }); // yeterli altını yok
     }
 });
 
 router.post('/sellProducts', function (req, res, next) {
 
-    let {
-        id,
-        islem,
-        rData
-    } = req.body.islemler;
+    let { id, islem, rData } = req.body.islemler;
     let log = req.body.loglar;
 
     if (rData[islem] > 0) {
@@ -337,36 +284,11 @@ router.post('/sellProducts', function (req, res, next) {
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
         dFonk.logOlustur(log, topics[0]);
-        res.json({
-            status: 201,
-            rData: rData
-        });
+        res.json({ status: 201, rData: rData });
 
     }).catch((reason) => {
-        res.json({
-            status: 409
-        });
+        res.json({ status: 409 });
     });
 });
 
-router.get('/test', function (req, res, next) {
-
-    var userData = {
-        userName: "eminzun",
-        password: "05312456227"
-    }
-
-    dFonk.kayitGetir(userData).then((result) => {
-
-        req.session.account = result;
-        res.send(result);
-
-    }).catch((reason) => {
-        if (reason == "bulunamadı") {
-            res.send(reason);
-        } else {
-            res.send(reason);
-        }
-    });
-});
 module.exports = router;

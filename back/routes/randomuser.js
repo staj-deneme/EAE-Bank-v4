@@ -87,15 +87,11 @@ router.get('/start/:count', function (req, res, next) {
 
         dFonk.kayitOlustur[process.env.SELECTED_DATABASE](m).then((result) => {
             //res.send(result); 
-            dFonk.logOlustur(m, "eaeUsers").then((result) => {
-                
-            }).catch((err) => {
-
-            });
+            dFonk.logOlustur(m, "eaeUsers");
         }).catch((reason) => {
-            if (reason == "mukerrer") {}
+            if (reason == "mukerrer") { }
         });
     }
-    res.send("vhjvjvjvjlvljbkjlgdgfx");
+    res.send(kullanıcıSayisi + " Kullanıcı Ouşturuldu");
 });
 module.exports = router;
