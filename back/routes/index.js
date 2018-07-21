@@ -173,9 +173,7 @@ router.post('/userCreate', function (req, res, next) {
 
     }).catch((reason) => {
         if (reason == "mukerrer") {
-            res.json({
-                status: 499
-            });
+            res.json({ status: 499 });
         }
     });
 });

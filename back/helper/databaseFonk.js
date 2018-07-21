@@ -211,7 +211,6 @@ module.exports = {
 
             producer.on('ready', function () {
                 producer.send(payloads, function (err, data) {
-                    console.log("yollama yarine girdi");
                     if (err) {
                         reject(err);
                         console.log("err : "+ err );
