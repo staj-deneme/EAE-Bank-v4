@@ -149,13 +149,14 @@ function uretimKaynak(data, id) {
     });
 }
 
-/* GET home page. */
+// Asıl Siteye Yönlendirir
 router.get('/', function (req, res, next) {
 
     res.redirect("http://localhost:3000/");
 
 });
 
+// Kullanıcı Oluşturur
 router.post('/userCreate', function (req, res, next) {
 
     var member = req.body.member;
@@ -172,6 +173,7 @@ router.post('/userCreate', function (req, res, next) {
     });
 });
 
+// Kullanıcının databasede olup olmadığını kontrol eder
 router.post('/userControl', function (req, res, next) {
 
     const {
@@ -194,6 +196,7 @@ router.post('/userControl', function (req, res, next) {
     });
 });
 
+// Kullanıcı Kontrolünden sonra ürünlerini günceller.
 router.post('/requireAuthentication', function (req, res, next) {
 
     const { userName, password } = req.body;
@@ -215,6 +218,7 @@ router.post('/requireAuthentication', function (req, res, next) {
     });
 });
 
+// Kullanıcı Bilgilerini Günceller
 router.post('/userUpdate', function (req, res, next) {
 
     const { id, rData } = req.body.islemler;
@@ -230,6 +234,7 @@ router.post('/userUpdate', function (req, res, next) {
     });
 });
 
+// hayvan ve yem Satın Alma Yeri
 router.post('/buyAnimalFeed', function (req, res, next) {
 
     let { id, islem, rData } = req.body.islemler;
@@ -271,6 +276,7 @@ router.post('/buyAnimalFeed', function (req, res, next) {
     }
 });
 
+// Ürünleri Satar
 router.post('/sellProducts', function (req, res, next) {
 
     let { id, islem, rData } = req.body.islemler;

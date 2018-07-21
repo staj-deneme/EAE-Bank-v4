@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var dFonk = require('../helper/databaseFonk');
-var Members = require("../models/Members.js");
 //http://localhost:3030/randomuser/start/8
 //random fonkları
 function strUret(boy) {

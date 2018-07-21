@@ -4,8 +4,6 @@ const storage = require('node-persist');
 var mysql = require('mysql');
 var kafka = require('kafka-node');
 
-
-
 if (process.env.SELECTED_DATABASE == "mysql") {
     var connection = mysql.createConnection({
         host: 'localhost',
@@ -22,7 +20,6 @@ if (process.env.SELECTED_DATABASE == "mysql") {
         }
     });
 }
-
 
 module.exports = {
     kayitOlustur: {

@@ -3,26 +3,23 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+
 var mongoose = require("mongoose");
 var mysql = require('mysql');
 const storage = require('node-persist');
-
-
 
 require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var randomUser = require('./routes/randomuser');
+
 const session = require('express-session');
 var app = express();
-
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
 
 app.use(session({
     secret: 'omer5000',
@@ -53,7 +50,6 @@ if (process.env.SELECTED_DATABASE == "mongoDB") {
     console.log("Json Bağlantı Tamam");
 
 }
-
 
 app.use(logger('dev'));
 app.use(express.json());
