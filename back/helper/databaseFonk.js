@@ -25,11 +25,13 @@ module.exports = {
     kayitOlustur: {
         mongoDB: function (data) {
             return new Promise((resolve, reject) => {
+                logData = data;
                 data = new Members(data);
                 data.save((err, data) => {
                     if (err) {
                         reject("mukerrer");
                     } else {
+                        
                         resolve(data);
                     }
                 });
@@ -196,7 +198,7 @@ module.exports = {
     },
     logOlustur: function (data, topicname) {
         return new Promise((resolve, reject) => {
-            
+
             var Producer = kafka.Producer,
                 client = new kafka.Client(),
                 producer = new Producer(client);
@@ -210,10 +212,34 @@ module.exports = {
                 producer.send(payloads, function (err, data) {
                     if (err) {
                         reject(err);
-                        console.log("err : "+ err );
+                        console.log("err : " + err);
                     } else {
+                        //console.log("data : " + JSON.stringify(data));
                         resolve(data);
-                        console.log("data : " + JSON.stringify(data));
+                    }
+                });
+            });
+
+        });
+    },
+    logOlustur2: function (data, topicname) {
+        return new Promise((resolve, reject) => {
+
+            var Producer = kafka.Producer,
+                client = new kafka.Client(),
+                producer = new Producer(client);
+
+            var payloads = data;
+
+            producer.on('ready', function () {
+                producer.send(payloads, function (err, data) {
+                    if (err) {
+                        reject(err);
+                        console.log("err : " + err);
+                    } else {
+                        //console.log("data : " + JSON.stringify(data));
+                        console.log("gönderme tamam");
+                        resolve(data);
                     }
                 });
             });

@@ -44,6 +44,8 @@ function cUret() {
 }
 router.get('/start/:count', function (req, res, next) {
     var kullanıcıSayisi = req.params.count;
+    var totalM = [];
+
     for (var i = 0; i < kullanıcıSayisi; i++) {
         var m = {
             name: strUret(10),
@@ -83,14 +85,19 @@ router.get('/start/:count', function (req, res, next) {
                 }]
             }
         };
-
+        totalM.push({ topic: "eaeUsers", messages: JSON.stringify(m) });
+        
         dFonk.kayitOlustur[process.env.SELECTED_DATABASE](m).then((result) => {
-            //res.send(result); 
-            dFonk.logOlustur(m, "eaeUsers");
         }).catch((reason) => {
-            if (reason == "mukerrer") { }
         });
+
     }
+
+    dFonk.logOlustur2(totalM, "eaeUsers").then((result) => {
+        console.log(result);
+    }).catch((err) => {
+        console.log("Hata Oldu1 " + reason);
+    });
     res.send(kullanıcıSayisi + " Kullanıcı Ouşturuldu");
 });
 module.exports = router;

@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var dFonk = require("../helper/databaseFonk.js");
 var fonk = require("../helper/uretimZaman");
-var topics = ["eaeLog", "eaeUsers"];
 
 function uretimKaynak(data, id) {
     return new Promise(function (resolve, reject) {
@@ -163,7 +162,6 @@ router.post('/userCreate', function (req, res, next) {
 
     dFonk.kayitOlustur[process.env.SELECTED_DATABASE](member).then((result) => {
 
-        dFonk.logOlustur(member, topics[1])
         res.json({ status: 201, member: result });
 
     }).catch((reason) => {
@@ -226,8 +224,11 @@ router.post('/userUpdate', function (req, res, next) {
 
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
-        dFonk.logOlustur(log, topics[0]);
-        res.json({ status: 201, rData: rData });
+        dFonk.logOlustur(log, "eaeLog").then((result) => {
+            res.json({ status: 201, rData: rData });
+        }).catch((err) => {
+            res.json({ status: 409 });
+        });
 
     }).catch((reason) => {
         res.json({ status: 409 });
@@ -266,8 +267,11 @@ router.post('/buyAnimalFeed', function (req, res, next) {
         rData.coin -= minCoin;
 
         dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
-            dFonk.logOlustur(log, topics[0]);
-            res.json({ status: 201, rData: rData });
+            dFonk.logOlustur(log, "eaeLog").then((result) => {
+                res.json({ status: 201, rData: rData });
+            }).catch((err) => {
+                res.json({ status: 409 });
+            });
         }).catch((reason) => {
             res.json({ status: 409 });
         });
@@ -289,8 +293,11 @@ router.post('/sellProducts', function (req, res, next) {
 
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
-        dFonk.logOlustur(log, topics[0]);
-        res.json({ status: 201, rData: rData });
+        dFonk.logOlustur(log, "eaeLog").then((result) => {
+            res.json({ status: 201, rData: rData });
+        }).catch((err) => {
+            res.json({ status: 409 });
+        });
 
     }).catch((reason) => {
         res.json({ status: 409 });
