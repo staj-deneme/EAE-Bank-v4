@@ -12,37 +12,40 @@ function uretimKaynak(data, id) {
             chicken: rData.chicken,
             bee: rData.bee
         };
-
         if (rData.cow != null) {
             olmeyecekler.cow = [];
             for (var j = 0; j < rData.cow.length; j++) {
                 //hayvan sayısına göre bonus
-                var oran=1.0;
-                if(rData.cow.length>=10 && rData.cow.length<20){   oran=1.2;} 
-                else if(rData.cow.length>=20 && rData.cow.length<30){   oran=1.5;}
-                else if(rData.cow.length>=30){   oran=2.0;}
-                //
-                dif = fonk.diffMin(new Date(), new Date(rData.cow[j].cal));//son beslenmeden beri geçen zaman
-                if(parseInt(dif/5)>=1 && rData.seed <= fonk.eatSeedBee(dif)){
-                    rData.cow[j].death=fonk.upTime(rData.cow[j].death,parseInt(dif/5));//ömür kısaltma
+                var oran = 1.0;
+                if (rData.cow.length >= 10 && rData.cow.length < 20) {
+                    oran = 1.2;
+                } else if (rData.cow.length >= 20 && rData.cow.length < 30) {
+                    oran = 1.5;
+                } else if (rData.cow.length >= 30) {
+                    oran = 2.0;
                 }
-                difDeath = fonk.diffMin(new Date(), new Date(rData.cow[j].death));//yaşamış olduğu süre
-                difTotal = fonk.deathCow() - fonk.diffMin(new Date(rData.cow[j].cal), new Date(rData.cow[j].death));
+                //
+                dif = fonk.diffMin(new Date(), new Date(rData.cow[j].cal)); //son beslenmeden beri geçen zaman
+                if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
+                    rData.cow[j].lifetime -=parseInt(dif / 5); //ömür kısaltma
+                }
+                difDeath = fonk.diffMin(new Date(), new Date(rData.cow[j].bTime)); //yaşamış olduğu süre
+                
 
-                if (difDeath >= fonk.deathCow()) {
+                if (difDeath >= rData.cow[j].lifetime) {
                     if (rData.seed >= fonk.eatSeedCow(dif)) {
-                        if (difTotal > 0) {
-                            rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(difTotal,oran));
-                            if (rData.seed >= fonk.eatSeedCow(difTotal)) {
-                                rData.seed -= fonk.eatSeedCow(difTotal)
+                        if (rData.cow[j].lifetime > 0) {
+                            rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(rData.cow[j].lifetime, oran));
+                            if (rData.seed >= fonk.eatSeedCow(rData.cow[j].lifetime)) {
+                                rData.seed -= fonk.eatSeedCow(rData.cow[j].lifetime)
                             }
                         }
                     }
                 } else {
                     if (rData.seed >= fonk.eatSeedCow(dif)) {
-                            rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(dif,oran));
-                            rData.cow[j].cal = new Date();
-                            rData.seed -= fonk.eatSeedCow(dif);
+                        rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(dif, oran));
+                        rData.cow[j].cal = new Date();
+                        rData.seed -= fonk.eatSeedCow(dif);
                     }
                     olmeyecekler.cow.push(rData.cow[j]);
                 }
@@ -54,33 +57,36 @@ function uretimKaynak(data, id) {
             olmeyecekler.chicken = [];
             for (var j = 0; j < rData.chicken.length; j++) {
                 //hayvan sayısına göre bonus
-                var oran=1.0;
-                if(rData.chicken.length>=10 && rData.chicken.length<20){   oran=1.2;} 
-                else if(rData.chicken.length>=20 && rData.chicken.length<30){   oran=1.5;}
-                else if(rData.chicken.length>=30){   oran=2;}
+                var oran = 1.0;
+                if (rData.chicken.length >= 10 && rData.chicken.length < 20) {
+                    oran = 1.2;
+                } else if (rData.chicken.length >= 20 && rData.chicken.length < 30) {
+                    oran = 1.5;
+                } else if (rData.chicken.length >= 30) {
+                    oran = 2;
+                }
                 //
 
-                dif = fonk.diffMin(new Date(), new Date(rData.chicken[j].cal));
-                if(parseInt(dif/5)>=1 && rData.seed <= fonk.eatSeedBee(dif)){
-                    rData.chicken[j].death=fonk.upTime(rData.chicken[j].death,parseInt(dif/5));//ömür kısaltma
+                dif = fonk.diffMin(new Date(), new Date(rData.chicken[j].cal));//son beslenmeden beri geçen zaman
+                if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
+                    rData.chicken[j].lifetime -= parseInt(dif / 5); //ömür kısaltma
                 }
-                difDeath = fonk.diffMin(new Date(), new Date(rData.chicken[j].death));
-                difTotal = fonk.deathChicken() - fonk.diffMin(new Date(rData.chicken[j].cal), new Date(rData.chicken[j].death));
+                difDeath = fonk.diffMin(new Date(), new Date(rData.chicken[j].bTime));//yaşamış olduğu süre
 
-                if (difDeath >= fonk.deathChicken()) {
+                if (difDeath >= rData.chicken[j].lifetime) {
                     if (rData.seed >= fonk.eatSeedChicken(dif)) {
-                        if (difTotal > 0) {
-                            rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(difTotal,oran));
-                            if (rData.seed >= fonk.eatSeedChicken(difTotal)) {
-                                rData.seed -= fonk.eatSeedChicken(difTotal)
+                        if (rData.chicken[j].lifetime > 0) {
+                            rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(rData.chicken[j].lifetime, oran));
+                            if (rData.seed >= fonk.eatSeedChicken(rData.chicken[j].lifetime)) {
+                                rData.seed -= fonk.eatSeedChicken(rData.chicken[j].lifetime)
                             }
                         }
                     }
                 } else {
                     if (rData.seed >= fonk.eatSeedChicken(dif)) {
-                            rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(dif,oran));
-                            rData.chicken[j].cal = new Date();
-                            rData.seed -= fonk.eatSeedChicken(dif);
+                        rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(dif, oran));
+                        rData.chicken[j].cal = new Date();
+                        rData.seed -= fonk.eatSeedChicken(dif);
                     }
                     olmeyecekler.chicken.push(rData.chicken[j]);
                 }
@@ -93,33 +99,36 @@ function uretimKaynak(data, id) {
             olmeyecekler.bee = [];
             for (var j = 0; j < rData.bee.length; j++) {
                 //hayvan sayısına göre bonus
-                var oran=1.0;
-                if(rData.bee.length>=10 && rData.bee.length<20){   oran=1.2;} 
-                else if(rData.bee.length>=20 && rData.bee.length<30){   oran=1.5;}
-                else if(rData.bee.length>=30){   oran=2;}
+                var oran = 1.0;
+                if (rData.bee.length >= 10 && rData.bee.length < 20) {
+                    oran = 1.2;
+                } else if (rData.bee.length >= 20 && rData.bee.length < 30) {
+                    oran = 1.5;
+                } else if (rData.bee.length >= 30) {
+                    oran = 2;
+                }
                 //
 
                 dif = fonk.diffMin(new Date(), new Date(rData.bee[j].cal));
-                if(parseInt(dif/5)>=1 && rData.seed <= fonk.eatSeedBee(dif)){
-                    rData.bee[j].death=fonk.upTime(rData.bee[j].death,parseInt(dif/5));//ömür kısaltma
+                if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
+                    rData.bee[j].lifetime -= parseInt(dif / 5); //ömür kısaltma
                 }
-                difDeath = fonk.diffMin(new Date(), new Date(rData.bee[j].death));
-                difTotal = fonk.deathBee() - fonk.diffMin(new Date(rData.bee[j].cal), new Date(rData.bee[j].death));
+                difDeath = fonk.diffMin(new Date(), new Date(rData.bee[j].bTime));//yaşamış olduğu zaman
 
-                if (difDeath >= fonk.deathBee()) {
+                if (difDeath >= rData.bee[j].lifetime) {
                     if (rData.seed >= fonk.eatSeedBee(dif)) {
-                        if (difTotal > 0) {
-                            rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(difTotal,oran));
-                            if (rData.seed >= fonk.eatSeedBee(difTotal)) {
-                                rData.seed -= fonk.eatSeedBee(difTotal)
+                        if (rData.bee[j].lifetime > 0) {
+                            rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(rData.bee[j].lifetime, oran));
+                            if (rData.seed >= fonk.eatSeedBee(rData.bee[j].lifetime)) {
+                                rData.seed -= fonk.eatSeedBee(rData.bee[j].lifetime)
                             }
                         }
                     }
                 } else {
                     if (rData.seed >= fonk.eatSeedBee(dif)) {
-                            rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(dif,oran));
-                            rData.bee[j].cal = new Date();
-                            rData.seed -= fonk.eatSeedBee(dif);
+                        rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(dif, oran));
+                        rData.bee[j].cal = new Date();
+                        rData.seed -= fonk.eatSeedBee(dif);
                     }
                     olmeyecekler.bee.push(rData.bee[j]);
                 }
@@ -128,6 +137,11 @@ function uretimKaynak(data, id) {
         }
 
         dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
+          /*  dFonk.logOlustur(log, "eaeDeathLog").then((result) => {
+                res.json({ status: 201, rData: rData });
+            }).catch((err) => {
+                res.json({ status: 409 });
+            });*/
             resolve(resultData);
         }).catch((reason) => {
             reject(reason);
@@ -136,20 +150,22 @@ function uretimKaynak(data, id) {
     });
 }
 
-/* GET home page. */
+// Asıl Siteye Yönlendirir
 router.get('/', function (req, res, next) {
 
     res.redirect("http://localhost:3000/");
 
 });
 
+// Kullanıcı Oluşturur
 router.post('/userCreate', function (req, res, next) {
 
     var member = req.body.member;
 
     dFonk.kayitOlustur[process.env.SELECTED_DATABASE](member).then((result) => {
+
         res.json({ status: 201, member: result });
-        /* res.send(result); */
+
     }).catch((reason) => {
         if (reason == "mukerrer") {
             res.json({ status: 499 });
@@ -157,18 +173,20 @@ router.post('/userCreate', function (req, res, next) {
     });
 });
 
+// Kullanıcının databasede olup olmadığını kontrol eder
 router.post('/userControl', function (req, res, next) {
 
-    const { userName, password } = req.body;
+    const {
+        userName,
+        password
+    } = req.body;
     var userData = {
         userName: userName,
         password: password
     }
 
     dFonk.kayitGetir[process.env.SELECTED_DATABASE](userData).then((result) => {
-
         res.json({ status: 201, account: result });
-
     }).catch((reason) => {
         if (reason == "bulunamadı") {
             res.json({ status: 204 });
@@ -178,13 +196,11 @@ router.post('/userControl', function (req, res, next) {
     });
 });
 
+// Kullanıcı Kontrolünden sonra ürünlerini günceller.
 router.post('/requireAuthentication', function (req, res, next) {
 
     const { userName, password } = req.body;
-    var userData = {
-        userName: userName,
-        password: password
-    }
+    var userData = { userName: userName, password: password }
 
     dFonk.kayitGetir[process.env.SELECTED_DATABASE](userData).then((resultData) => {
 
@@ -202,6 +218,7 @@ router.post('/requireAuthentication', function (req, res, next) {
     });
 });
 
+// Kullanıcı Bilgilerini Günceller
 router.post('/userUpdate', function (req, res, next) {
 
     const { id, rData } = req.body.islemler;
@@ -209,12 +226,10 @@ router.post('/userUpdate', function (req, res, next) {
 
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
-        dFonk.logOlustur[process.env.SELECTED_DATABASE](log).then((result) => {
-
+        dFonk.logOlustur(log, "eaeLog").then((result) => {
             res.json({ status: 201, rData: rData });
-
-        }).catch((reason) => {
-            res.json({ status: 499 });
+        }).catch((err) => {
+            res.json({ status: 409 });
         });
 
     }).catch((reason) => {
@@ -222,27 +237,31 @@ router.post('/userUpdate', function (req, res, next) {
     });
 });
 
+// hayvan ve yem Satın Alma Yeri
 router.post('/buyAnimalFeed', function (req, res, next) {
 
     let { id, islem, rData } = req.body.islemler;
-
     let log = req.body.loglar;
 
     var minCoin = 0;
 
     var kayit = {
         cal: new Date(),
-        death: new Date()
+        lifetime:15,
+        bTime: new Date()
     };
 
     if (islem == "cow") {
         minCoin = 50;
+        kayit.lifetime=15+parseInt(fonk.lifetimeCalc(4));
         rData.cow.push(kayit);
     } else if (islem == "chicken") {
         minCoin = 20;
+        kayit.lifetime=15+parseInt(fonk.lifetimeCalc(3));
         rData.chicken.push(kayit);
     } else if (islem == "bee") {
         minCoin = 5;
+        kayit.lifetime=15+parseInt(fonk.lifetimeCalc(2));
         rData.bee.push(kayit);
     } else if (islem == "seed") {
         minCoin = 1;
@@ -254,16 +273,11 @@ router.post('/buyAnimalFeed', function (req, res, next) {
         rData.coin -= minCoin;
 
         dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
-
-            dFonk.logOlustur[process.env.SELECTED_DATABASE](log).then((result) => {
-
+            dFonk.logOlustur(log, "eaeLog").then((result) => {
                 res.json({ status: 201, rData: rData });
-
-            }).catch((reason) => {
-                res.json({ status: 499 });
+            }).catch((err) => {
+                res.json({ status: 409 });
             });
-
-
         }).catch((reason) => {
             res.json({ status: 409 });
         });
@@ -272,6 +286,7 @@ router.post('/buyAnimalFeed', function (req, res, next) {
     }
 });
 
+// Ürünleri Satar
 router.post('/sellProducts', function (req, res, next) {
 
     let { id, islem, rData } = req.body.islemler;
@@ -284,11 +299,9 @@ router.post('/sellProducts', function (req, res, next) {
 
     dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
 
-        dFonk.logOlustur[process.env.SELECTED_DATABASE](log).then((result) => {
-
+        dFonk.logOlustur(log, "eaeLog").then((result) => {
             res.json({ status: 201, rData: rData });
-
-        }).catch((reason) => {
+        }).catch((err) => {
             res.json({ status: 409 });
         });
 
@@ -297,24 +310,4 @@ router.post('/sellProducts', function (req, res, next) {
     });
 });
 
-router.get('/test', function (req, res, next) {
-
-    var userData = {
-        userName: "eminzun",
-        password: "05312456227"
-    }
-
-    dFonk.kayitGetir[process.env.SELECTED_DATABASE](userData).then((result) => {
-
-        req.session.account = result;
-        res.send(result);
-
-    }).catch((reason) => {
-        if (reason == "bulunamadı") {
-            res.send(reason);
-        } else {
-            res.send(reason);
-        }
-    });
-});
 module.exports = router;

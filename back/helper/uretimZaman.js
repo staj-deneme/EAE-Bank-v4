@@ -55,6 +55,9 @@ deathChicken:function(){//tavuk 15 dk yaşasın
 deathBee:function(){//arı 10 dk yaşasın
     return 30;
 },
+lifetimeCalc:function(tur){
+    return ((tur*tur)+Math.floor(Math.random() * (16) + 1));
+},
 
 //hayvanların yaşam süresini beslenmediği zamana göre güncelleme
 //aç kaldığı her 10 dk için 1dk ömür kısalcak(death+=1dk)
