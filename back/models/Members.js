@@ -42,9 +42,13 @@ const MembersSchema = new Schema({
                 type: Date,
                 default: Date.now
             },
-            death: {
+            bTime: {
                 type: Date,
                 default: Date.now
+            },
+            lifetime: {
+                type: Number,
+                default: 15
             }
         }],
         chicken: [{
@@ -52,9 +56,13 @@ const MembersSchema = new Schema({
                 type: Date,
                 default: Date.now
             },
-            death: {
+            bTime: {
                 type: Date,
                 default: Date.now
+            },
+            lifetime: {
+                type: Number,
+                default: 15
             }
         }],
         bee: [{
@@ -62,9 +70,13 @@ const MembersSchema = new Schema({
                 type: Date,
                 default: Date.now
             },
-            death: {
+            bTime: {
                 type: Date,
                 default: Date.now
+            },
+            lifetime: {
+                type: Number,
+                default: 15
             }
         }]
     }

@@ -6,13 +6,12 @@ var fonk = require("../helper/uretimZaman");
 function uretimKaynak(data, id) {
     return new Promise(function (resolve, reject) {
         var rData = data.resources;
-        let dif, difDeath, difTotal;
+        let dif, difDeath, eaeDeathLog = [];
         let olmeyecekler = {
             cow: rData.cow,
             chicken: rData.chicken,
             bee: rData.bee
         };
-
         if (rData.cow != null) {
             olmeyecekler.cow = [];
             for (var j = 0; j < rData.cow.length; j++) {
@@ -28,20 +27,43 @@ function uretimKaynak(data, id) {
                 //
                 dif = fonk.diffMin(new Date(), new Date(rData.cow[j].cal)); //son beslenmeden beri geçen zaman
                 if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
+<<<<<<< HEAD
                     rData.cow[j].death = fonk.upTime(rData.cow[j].death, parseInt(dif / 5)); //ömür kısaltma
                 }
                 difDeath = fonk.diffMin(new Date(), new Date(rData.cow[j].death)); //yaşamış olduğu süre
                 difTotal = fonk.deathCow() - fonk.diffMin(new Date(rData.cow[j].cal), new Date(rData.cow[j].death));
+=======
+                    rData.cow[j].lifetime -= parseInt(dif / 5); //ömür kısaltma
+                }
+                difDeath = fonk.diffMin(new Date(), new Date(rData.cow[j].bTime)); //yaşamış olduğu süre
 
-                if (difDeath >= fonk.deathCow()) {
+>>>>>>> emre
+
+                if (difDeath >= rData.cow[j].lifetime) {
                     if (rData.seed >= fonk.eatSeedCow(dif)) {
+<<<<<<< HEAD
                         if (difTotal > 0) {
                             rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(difTotal, oran));
                             if (rData.seed >= fonk.eatSeedCow(difTotal)) {
                                 rData.seed -= fonk.eatSeedCow(difTotal)
+=======
+                        if (rData.cow[j].lifetime > 0) {
+                            rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(rData.cow[j].lifetime, oran));
+                            if (rData.seed >= fonk.eatSeedCow(rData.cow[j].lifetime)) {
+                                rData.seed -= fonk.eatSeedCow(rData.cow[j].lifetime)
+>>>>>>> emre
                             }
                         }
                     }
+                    eaeDeathLog.push({
+                        topic: "eaeDeathLog",
+                        messages: JSON.stringify({
+                            animalType: "cow",
+                            userName: data.userName,
+                            lifeTime: rData.cow[j].lifetime,
+                            bTime: rData.cow[j].bTime
+                        })
+                    });
                 } else {
                     if (rData.seed >= fonk.eatSeedCow(dif)) {
                         rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(dif, oran));
@@ -68,22 +90,43 @@ function uretimKaynak(data, id) {
                 }
                 //
 
+<<<<<<< HEAD
                 dif = fonk.diffMin(new Date(), new Date(rData.chicken[j].cal));
                 if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
                     rData.chicken[j].death = fonk.upTime(rData.chicken[j].death, parseInt(dif / 5)); //ömür kısaltma
+=======
+                dif = fonk.diffMin(new Date(), new Date(rData.chicken[j].cal));//son beslenmeden beri geçen zaman
+                if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
+                    rData.chicken[j].lifetime -= parseInt(dif / 5); //ömür kısaltma
+>>>>>>> emre
                 }
-                difDeath = fonk.diffMin(new Date(), new Date(rData.chicken[j].death));
-                difTotal = fonk.deathChicken() - fonk.diffMin(new Date(rData.chicken[j].cal), new Date(rData.chicken[j].death));
+                difDeath = fonk.diffMin(new Date(), new Date(rData.chicken[j].bTime));//yaşamış olduğu süre
 
-                if (difDeath >= fonk.deathChicken()) {
+                if (difDeath >= rData.chicken[j].lifetime) {
                     if (rData.seed >= fonk.eatSeedChicken(dif)) {
+<<<<<<< HEAD
                         if (difTotal > 0) {
                             rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(difTotal, oran));
                             if (rData.seed >= fonk.eatSeedChicken(difTotal)) {
                                 rData.seed -= fonk.eatSeedChicken(difTotal)
+=======
+                        if (rData.chicken[j].lifetime > 0) {
+                            rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(rData.chicken[j].lifetime, oran));
+                            if (rData.seed >= fonk.eatSeedChicken(rData.chicken[j].lifetime)) {
+                                rData.seed -= fonk.eatSeedChicken(rData.chicken[j].lifetime)
+>>>>>>> emre
                             }
                         }
                     }
+                    eaeDeathLog.push({
+                        topic: "eaeDeathLog",
+                        messages: JSON.stringify({
+                            animalType: "chicken",
+                            userName: data.userName,
+                            lifeTime: rData.chicken[j].lifetime,
+                            bTime: rData.chicken[j].bTime
+                        })
+                    });
                 } else {
                     if (rData.seed >= fonk.eatSeedChicken(dif)) {
                         rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(dif, oran));
@@ -113,20 +156,39 @@ function uretimKaynak(data, id) {
 
                 dif = fonk.diffMin(new Date(), new Date(rData.bee[j].cal));
                 if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
+<<<<<<< HEAD
                     rData.bee[j].death = fonk.upTime(rData.bee[j].death, parseInt(dif / 5)); //ömür kısaltma
+=======
+                    rData.bee[j].lifetime -= parseInt(dif / 5); //ömür kısaltma
+>>>>>>> emre
                 }
-                difDeath = fonk.diffMin(new Date(), new Date(rData.bee[j].death));
-                difTotal = fonk.deathBee() - fonk.diffMin(new Date(rData.bee[j].cal), new Date(rData.bee[j].death));
+                difDeath = fonk.diffMin(new Date(), new Date(rData.bee[j].bTime));//yaşamış olduğu zaman
 
-                if (difDeath >= fonk.deathBee()) {
+                if (difDeath >= rData.bee[j].lifetime) {
                     if (rData.seed >= fonk.eatSeedBee(dif)) {
+<<<<<<< HEAD
                         if (difTotal > 0) {
                             rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(difTotal, oran));
                             if (rData.seed >= fonk.eatSeedBee(difTotal)) {
                                 rData.seed -= fonk.eatSeedBee(difTotal)
+=======
+                        if (rData.bee[j].lifetime > 0) {
+                            rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(rData.bee[j].lifetime, oran));
+                            if (rData.seed >= fonk.eatSeedBee(rData.bee[j].lifetime)) {
+                                rData.seed -= fonk.eatSeedBee(rData.bee[j].lifetime)
+>>>>>>> emre
                             }
                         }
                     }
+                    eaeDeathLog.push({
+                        topic: "eaeDeathLog",
+                        messages: JSON.stringify({
+                            animalType: "bee",
+                            userName: data.userName,
+                            lifeTime: rData.bee[j].lifetime,
+                            bTime: rData.bee[j].bTime
+                        })
+                    });
                 } else {
                     if (rData.seed >= fonk.eatSeedBee(dif)) {
                         rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(dif, oran));
@@ -140,7 +202,16 @@ function uretimKaynak(data, id) {
         }
 
         dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
-            resolve(resultData);
+            if (eaeDeathLog.length != 0) {
+                dFonk.logOlustur2(eaeDeathLog, "eaeDeathLog").then((result) => {
+                    resolve(rData);
+                }).catch((err) => {
+                    reject(err);
+                });
+            }else{
+                resolve(rData);
+            }
+
         }).catch((reason) => {
             reject(reason);
         });
@@ -245,17 +316,21 @@ router.post('/buyAnimalFeed', function (req, res, next) {
 
     var kayit = {
         cal: new Date(),
-        death: new Date()
+        lifetime: 15,
+        bTime: new Date()
     };
 
     if (islem == "cow") {
         minCoin = 50;
+        kayit.lifetime = 15 + parseInt(fonk.lifetimeCalc(4));
         rData.cow.push(kayit);
     } else if (islem == "chicken") {
         minCoin = 20;
+        kayit.lifetime = 15 + parseInt(fonk.lifetimeCalc(3));
         rData.chicken.push(kayit);
     } else if (islem == "bee") {
         minCoin = 5;
+        kayit.lifetime = 15 + parseInt(fonk.lifetimeCalc(2));
         rData.bee.push(kayit);
     } else if (islem == "seed") {
         minCoin = 1;

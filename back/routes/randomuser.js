@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var dFonk = require('../helper/databaseFonk');
+<<<<<<< HEAD
+=======
+var uret=require('../helper/uretimZaman');
+>>>>>>> emre
 //http://localhost:3030/randomuser/start/8
 //random fonkları
 function strUret(boy) {
@@ -61,6 +65,7 @@ router.get('/start/:count', function (req, res, next) {
                 milk: 0,
                 egg: 0,
                 honey: 0,
+<<<<<<< HEAD
                 seed: intUret(2000, 1000),
                 cow: [{
                     "cal": new Date(),
@@ -82,6 +87,35 @@ router.get('/start/:count', function (req, res, next) {
                 }, {
                     "cal": new Date(),
                     "death": new Date()
+=======
+                seed: intUret(10000, 0),
+                cow: [{
+                    "cal": new Date(),
+                    "lifetime":(60*19)+uret.lifetimeCalc(4),
+                    "bTime": new Date()
+                }, {
+                    "cal": new Date(),
+                    "lifetime":(60*19)+uret.lifetimeCalc(4),
+                    "bTime": new Date()
+                }],
+                chicken: [{
+                    "cal": new Date(),
+                    "lifetime":(60*19)+uret.lifetimeCalc(3),
+                    "bTime": new Date()
+                }, {
+                    "cal": new Date(),
+                    "lifetime":(60*19)+uret.lifetimeCalc(3),
+                    "bTime": new Date()
+                }],
+                bee: [{
+                    "cal": new Date(),
+                    "lifetime":(60*19)+uret.lifetimeCalc(2),
+                    "bTime": new Date()
+                }, {
+                    "cal": new Date(),
+                    "lifetime":(60*19)+uret.lifetimeCalc(2),
+                    "bTime": new Date()
+>>>>>>> emre
                 }]
             }
         };
