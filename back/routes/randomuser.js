@@ -62,32 +62,32 @@ router.get('/start/:count', function (req, res, next) {
                 milk: 0,
                 egg: 0,
                 honey: 0,
-                seed: intUret(2000, 1000),
+                seed: intUret(10000, 0),
                 cow: [{
                     "cal": new Date(),
-                    "lifetime":15+uret.lifetimeCalc(4),
+                    "lifetime":(60*19)+uret.lifetimeCalc(4),
                     "bTime": new Date()
                 }, {
                     "cal": new Date(),
-                    "lifetime":15+uret.lifetimeCalc(4),
+                    "lifetime":(60*19)+uret.lifetimeCalc(4),
                     "bTime": new Date()
                 }],
                 chicken: [{
                     "cal": new Date(),
-                    "lifetime":15+uret.lifetimeCalc(3),
+                    "lifetime":(60*19)+uret.lifetimeCalc(3),
                     "bTime": new Date()
                 }, {
                     "cal": new Date(),
-                    "lifetime":15+uret.lifetimeCalc(3),
+                    "lifetime":(60*19)+uret.lifetimeCalc(3),
                     "bTime": new Date()
                 }],
                 bee: [{
                     "cal": new Date(),
-                    "lifetime":15+uret.lifetimeCalc(2),
+                    "lifetime":(60*19)+uret.lifetimeCalc(2),
                     "bTime": new Date()
                 }, {
                     "cal": new Date(),
-                    "lifetime":15+uret.lifetimeCalc(2),
+                    "lifetime":(60*19)+uret.lifetimeCalc(2),
                     "bTime": new Date()
                 }]
             }

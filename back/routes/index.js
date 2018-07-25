@@ -6,7 +6,7 @@ var fonk = require("../helper/uretimZaman");
 function uretimKaynak(data, id) {
     return new Promise(function (resolve, reject) {
         var rData = data.resources;
-        let dif, difDeath, difTotal;
+        let dif, difDeath, eaeDeathLog = [];
         let olmeyecekler = {
             cow: rData.cow,
             chicken: rData.chicken,
@@ -27,10 +27,10 @@ function uretimKaynak(data, id) {
                 //
                 dif = fonk.diffMin(new Date(), new Date(rData.cow[j].cal)); //son beslenmeden beri geçen zaman
                 if (parseInt(dif / 5) >= 1 && rData.seed <= fonk.eatSeedBee(dif)) {
-                    rData.cow[j].lifetime -=parseInt(dif / 5); //ömür kısaltma
+                    rData.cow[j].lifetime -= parseInt(dif / 5); //ömür kısaltma
                 }
                 difDeath = fonk.diffMin(new Date(), new Date(rData.cow[j].bTime)); //yaşamış olduğu süre
-                
+
 
                 if (difDeath >= rData.cow[j].lifetime) {
                     if (rData.seed >= fonk.eatSeedCow(dif)) {
@@ -41,6 +41,15 @@ function uretimKaynak(data, id) {
                             }
                         }
                     }
+                    eaeDeathLog.push({
+                        topic: "eaeDeathLog",
+                        messages: JSON.stringify({
+                            animalType: "cow",
+                            userName: data.userName,
+                            lifeTime: rData.cow[j].lifetime,
+                            bTime: rData.cow[j].bTime
+                        })
+                    });
                 } else {
                     if (rData.seed >= fonk.eatSeedCow(dif)) {
                         rData.milk = parseFloat(rData.milk) + parseFloat(fonk.cowMilk(dif, oran));
@@ -82,6 +91,15 @@ function uretimKaynak(data, id) {
                             }
                         }
                     }
+                    eaeDeathLog.push({
+                        topic: "eaeDeathLog",
+                        messages: JSON.stringify({
+                            animalType: "chicken",
+                            userName: data.userName,
+                            lifeTime: rData.chicken[j].lifetime,
+                            bTime: rData.chicken[j].bTime
+                        })
+                    });
                 } else {
                     if (rData.seed >= fonk.eatSeedChicken(dif)) {
                         rData.egg = parseFloat(rData.egg) + parseFloat(fonk.chickenEgg(dif, oran));
@@ -124,6 +142,15 @@ function uretimKaynak(data, id) {
                             }
                         }
                     }
+                    eaeDeathLog.push({
+                        topic: "eaeDeathLog",
+                        messages: JSON.stringify({
+                            animalType: "bee",
+                            userName: data.userName,
+                            lifeTime: rData.bee[j].lifetime,
+                            bTime: rData.bee[j].bTime
+                        })
+                    });
                 } else {
                     if (rData.seed >= fonk.eatSeedBee(dif)) {
                         rData.honey = parseFloat(rData.honey) + parseFloat(fonk.beeHoney(dif, oran));
@@ -137,12 +164,16 @@ function uretimKaynak(data, id) {
         }
 
         dFonk.findByIdAndUpdate[process.env.SELECTED_DATABASE](id, rData).then((resultData) => {
-          /*  dFonk.logOlustur(log, "eaeDeathLog").then((result) => {
-                res.json({ status: 201, rData: rData });
-            }).catch((err) => {
-                res.json({ status: 409 });
-            });*/
-            resolve(resultData);
+            if (eaeDeathLog.length != 0) {
+                dFonk.logOlustur2(eaeDeathLog, "eaeDeathLog").then((result) => {
+                    resolve(rData);
+                }).catch((err) => {
+                    reject(err);
+                });
+            }else{
+                resolve(rData);
+            }
+
         }).catch((reason) => {
             reject(reason);
         });
@@ -247,21 +278,21 @@ router.post('/buyAnimalFeed', function (req, res, next) {
 
     var kayit = {
         cal: new Date(),
-        lifetime:15,
+        lifetime: 15,
         bTime: new Date()
     };
 
     if (islem == "cow") {
         minCoin = 50;
-        kayit.lifetime=15+parseInt(fonk.lifetimeCalc(4));
+        kayit.lifetime = 15 + parseInt(fonk.lifetimeCalc(4));
         rData.cow.push(kayit);
     } else if (islem == "chicken") {
         minCoin = 20;
-        kayit.lifetime=15+parseInt(fonk.lifetimeCalc(3));
+        kayit.lifetime = 15 + parseInt(fonk.lifetimeCalc(3));
         rData.chicken.push(kayit);
     } else if (islem == "bee") {
         minCoin = 5;
-        kayit.lifetime=15+parseInt(fonk.lifetimeCalc(2));
+        kayit.lifetime = 15 + parseInt(fonk.lifetimeCalc(2));
         rData.bee.push(kayit);
     } else if (islem == "seed") {
         minCoin = 1;
